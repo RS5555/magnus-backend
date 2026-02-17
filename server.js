@@ -23,16 +23,16 @@ const transporter = nodemailer.createTransport({
   secure: false, // Must be false for port 587
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    pass: process.env.EMAIL_PASS, // 16-digit App Password
   },
   tls: {
-    // This allows the connection to proceed even if 
-    // Render's network certificate is slightly different
+    // This forces the connection to stay open despite Render's proxy
     rejectUnauthorized: false,
     minVersion: "TLSv1.2"
   },
-  connectionTimeout: 10000, // Wait 10 seconds before giving up
-  greetingTimeout: 5000,    // Wait 5 seconds for Google to say hello
+  connectionTimeout: 20000, // Increased to 20s for Free Tier
+  greetingTimeout: 20000,   // Increased to 20s
+  socketTimeout: 20000      // Increased to 20s
 });
 
 app.post("/api/contact", async (req, res) => {
