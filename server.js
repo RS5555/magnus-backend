@@ -20,10 +20,15 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // Use STARTTLS
+  secure: false, // Must be false for port 587
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    // This ensures the connection isn't dropped by Render's internal network
+    rejectUnauthorized: false,
+    minVersion: "TLSv1.2",
   },
 });
 
@@ -53,10 +58,12 @@ app.post("/api/contact", async (req, res) => {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ success: true, message: "Message sent!" });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ success: false, message: "Failed to send message." });
+    console.error("DETAILED SMTP ERROR:", error); // This will show in Render "Logs"
+    res.status(500).json({
+      success: false,
+      message: "Failed to send message.",
+      error: error.message, // Helps identify if it's a login issue or network issue
+    });
   }
 });
 
