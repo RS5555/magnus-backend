@@ -20,17 +20,19 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // Must be false for 587
+  secure: false, // Must be false for port 587
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
   tls: {
-    // This tells Node.js not to be too strict about the
-    // network tunnel Render is using
+    // This allows the connection to proceed even if 
+    // Render's network certificate is slightly different
     rejectUnauthorized: false,
-    minVersion: "TLSv1.2",
+    minVersion: "TLSv1.2"
   },
+  connectionTimeout: 10000, // Wait 10 seconds before giving up
+  greetingTimeout: 5000,    // Wait 5 seconds for Google to say hello
 });
 
 app.post("/api/contact", async (req, res) => {
