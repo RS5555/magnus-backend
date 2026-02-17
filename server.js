@@ -17,21 +17,14 @@ app.use(express.json());
 //   },
 // });
 
-// Configure the Mail Transporter
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true, // Use SSL
+  port: 587,
+  secure: false, // Use STARTTLS
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  // ADD THIS BLOCK TO FIX THE ERROR
-  tls: {
-    rejectUnauthorized: false, // Helps with some hosting provider restrictions
-  },
-  // Force IPv4
-  connectionTimeout: 10000, // 10 seconds
 });
 
 app.post("/api/contact", async (req, res) => {
