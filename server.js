@@ -20,13 +20,14 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
-  secure: false, // Must be false for port 587
+  secure: false, // Must be false for 587
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
   tls: {
-    // This ensures the connection isn't dropped by Render's internal network
+    // This tells Node.js not to be too strict about the
+    // network tunnel Render is using
     rejectUnauthorized: false,
     minVersion: "TLSv1.2",
   },
