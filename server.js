@@ -8,13 +8,30 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// // Configure the Mail Transporter
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS, // Your 16-digit Google App Password
+//   },
+// });
+
 // Configure the Mail Transporter
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // Use SSL
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, // Your 16-digit Google App Password
+    pass: process.env.EMAIL_PASS,
   },
+  // ADD THIS BLOCK TO FIX THE ERROR
+  tls: {
+    rejectUnauthorized: false, // Helps with some hosting provider restrictions
+  },
+  // Force IPv4
+  connectionTimeout: 10000, // 10 seconds
 });
 
 app.post("/api/contact", async (req, res) => {
